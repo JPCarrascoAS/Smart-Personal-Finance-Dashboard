@@ -1,12 +1,12 @@
 # FinanceAI - Smart Personal Finance Dashboard
 
-A full-stack expense tracking web application with AI-powered financial insights. Built with Next.js 16, TypeScript, Prisma, PostgreSQL, and OpenAI.
+A full-stack expense tracking web application with AI-powered financial insights. Built with Next.js 16, TypeScript, Prisma, PostgreSQL, and Groq AI.
 
 ## Features
 
 - **Dashboard** - Real-time overview with summary cards, income vs expense trend charts, and category breakdowns
 - **Transaction Management** - Full CRUD for income and expenses with categories, tags, filters, search, and pagination
-- **AI Insights** - GPT-4o-mini analyzes your spending patterns, detects anomalies, and suggests saving strategies
+- **AI Insights** - Llama 3.3 70B (via Groq, free) analyzes your spending patterns, detects anomalies, and suggests saving strategies
 - **Authentication** - Email/password registration + optional GitHub/Google OAuth via NextAuth v5
 - **Responsive Design** - Glassmorphism dark theme optimized for desktop and mobile
 - **Dockerized** - One-command setup with Docker Compose (PostgreSQL included)
@@ -21,7 +21,7 @@ A full-stack expense tracking web application with AI-powered financial insights
 | Backend | Next.js Server Actions + API Routes |
 | Database | PostgreSQL 16 via Prisma ORM 7 |
 | Auth | NextAuth v5 (Auth.js) |
-| AI | OpenAI API (GPT-4o-mini) |
+| AI | Groq API (Llama 3.3 70B) - free tier |
 | Deployment | Docker / Vercel |
 
 ## Prerequisites
@@ -106,7 +106,7 @@ On the **Transactions** page:
    - **Saving Tip** - Concrete suggestions to save money
    - **Budget** - Budget allocation recommendations
 
-> **Note:** AI Insights require an `OPENAI_API_KEY` in your `.env` file. The feature gracefully degrades without it.
+> **Note:** AI Insights require a `GROQ_API_KEY` in your `.env` file. Get a free key at [console.groq.com](https://console.groq.com). The feature gracefully degrades without it.
 
 ## Environment Variables
 
@@ -120,7 +120,7 @@ On the **Transactions** page:
 | `GITHUB_CLIENT_SECRET` | No | GitHub OAuth app client secret |
 | `GOOGLE_CLIENT_ID` | No | Google OAuth client ID |
 | `GOOGLE_CLIENT_SECRET` | No | Google OAuth client secret |
-| `OPENAI_API_KEY` | No | OpenAI API key for AI insights |
+| `GROQ_API_KEY` | No | Groq API key for AI insights (free at [console.groq.com](https://console.groq.com)) |
 
 ## Project Structure
 
@@ -147,7 +147,7 @@ On the **Transactions** page:
 │   │   ├── insights/           # InsightsPanel
 │   │   ├── landing/            # Landing page
 │   │   └── layout/             # Sidebar, Header
-│   ├── lib/                    # Auth, Prisma, OpenAI, utils, validations
+│   ├── lib/                    # Auth, Prisma, Groq, utils, validations
 │   └── types/                  # TypeScript types
 ├── Dockerfile                  # Multi-stage (dev + production)
 ├── docker-compose.yml          # App + PostgreSQL
@@ -190,7 +190,7 @@ npm run dev
    - `DATABASE_URL` - Your cloud PostgreSQL connection string
    - `NEXTAUTH_URL` - Your Vercel deployment URL
    - `NEXTAUTH_SECRET` / `AUTH_SECRET` - Generate a secure secret
-   - `OPENAI_API_KEY` - (Optional) For AI insights
+   - `GROQ_API_KEY` - (Optional, free) For AI insights
 
 4. **Deploy** - Vercel will automatically build and deploy
 

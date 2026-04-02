@@ -2,7 +2,7 @@
 
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
-import { getOpenAIClient } from "@/lib/openai";
+import { getGroqClient } from "@/lib/groq";
 import { subMonths, format } from "date-fns";
 import type { InsightData } from "@/types/index";
 
@@ -26,10 +26,10 @@ export async function getInsights(): Promise<InsightData[]> {
 
 export async function generateInsights(): Promise<{ success: boolean; error?: string }> {
   const userId = await getUserId();
-  const openai = getOpenAIClient();
+  const groq = getGroqClient();
 
-  if (!openai) {
-    return { success: false, error: "OpenAI API key not configured. Add OPENAI_API_KEY to your .env file." };
+  if (!groq) {
+    return { success: false, error: "Groq API key not configured. Add GROQ_API_KEY to your .env file." };
   }
 
   const sixMonthsAgo = subMonths(new Date(), 6);
@@ -97,8 +97,8 @@ Include:
 4. One BUDGET recommendation`;
 
   try {
-    const response = await openai.chat.completions.create({
-      model: "gpt-4o-mini",
+    const response = await groq.chat.completions.create({
+      model: "llama-3.3-70b-versatile",
       messages: [{ role: "user", content: prompt }],
       temperature: 0.7,
       max_tokens: 800,
@@ -114,7 +114,6 @@ Include:
       priority: number;
     }>;
 
-    // Clear old insights and insert new ones
     await prisma.insight.deleteMany({ where: { userId } });
     await prisma.insight.createMany({
       data: parsed.map((insight) => ({

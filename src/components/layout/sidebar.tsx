@@ -83,7 +83,7 @@ export function Sidebar({ open, onClose }: SidebarProps) {
         <div className="p-4 border-t border-border">
           <div className="glass rounded-xl p-4 text-center">
             <p className="text-xs text-muted">Powered by</p>
-            <p className="text-sm font-semibold gradient-text">OpenAI GPT-4o</p>
+            <p className="text-sm font-semibold gradient-text">Groq AI</p>
           </div>
         </div>
       </aside>
