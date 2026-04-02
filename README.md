@@ -182,19 +182,64 @@ npm run dev
 
 ## Deploying to Vercel
 
-1. **Set up a PostgreSQL database** using [Neon](https://neon.tech), [Supabase](https://supabase.com), or [Vercel Postgres](https://vercel.com/postgres)
+### 1. Create a free PostgreSQL database on Neon
 
-2. **Push to GitHub** and import the repo in [Vercel](https://vercel.com)
+1. Sign up at [neon.tech](https://neon.tech) (free tier includes 0.5 GB storage)
+2. Create a new project (e.g., `finance-dashboard`)
+3. Copy the connection string -- it looks like:
+   ```
+   postgresql://neondb_owner:xxxx@ep-xxx.us-west-2.aws.neon.tech/neondb?sslmode=require
+   ```
 
-3. **Add environment variables** in Vercel project settings:
-   - `DATABASE_URL` - Your cloud PostgreSQL connection string
-   - `NEXTAUTH_URL` - Your Vercel deployment URL
-   - `NEXTAUTH_SECRET` / `AUTH_SECRET` - Generate a secure secret
-   - `GROQ_API_KEY` - (Optional, free) For AI insights
+### 2. Push the schema and seed data to Neon
 
-4. **Deploy** - Vercel will automatically build and deploy
+```bash
+# Set your Neon connection string
+export DATABASE_URL="postgresql://neondb_owner:xxxx@ep-xxx.us-west-2.aws.neon.tech/neondb?sslmode=require"
 
-> The `Dockerfile` includes a production-optimized multi-stage build with `output: "standalone"` for minimal image size if deploying to other platforms.
+# Create all tables
+npx prisma db push
+
+# Seed default categories
+npx prisma db seed
+```
+
+### 3. Get a free Groq API key (optional)
+
+1. Sign up at [console.groq.com](https://console.groq.com)
+2. Go to **API Keys** > **Create API Key**
+3. Copy the key (starts with `gsk_`)
+
+### 4. Deploy to Vercel
+
+```bash
+# Install the Vercel CLI
+npm install -g vercel
+
+# Log in
+vercel login
+
+# Link the project (from the repo root)
+vercel link --yes --project your-project-name
+
+# Set environment variables
+echo "your-neon-connection-string" | vercel env add DATABASE_URL production
+echo "$(openssl rand -base64 32)" | vercel env add AUTH_SECRET production
+echo "$(openssl rand -base64 32)" | vercel env add NEXTAUTH_SECRET production
+echo "https://your-project.vercel.app" | vercel env add NEXTAUTH_URL production
+echo "your-groq-api-key" | vercel env add GROQ_API_KEY production
+
+# Deploy to production
+vercel --prod
+```
+
+Alternatively, push to GitHub and import the repo at [vercel.com/new](https://vercel.com/new). Add the environment variables in **Project Settings > Environment Variables**, then deploy.
+
+### 5. Verify
+
+Open your Vercel deployment URL, register an account, and start tracking your finances.
+
+> The `Dockerfile` includes a production-optimized multi-stage build with `output: "standalone"` for minimal image size if deploying to other platforms (AWS, Fly.io, Railway, etc.).
 
 ## Stopping the Application
 
