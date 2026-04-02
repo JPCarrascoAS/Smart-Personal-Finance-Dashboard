@@ -39,6 +39,6 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         };
       },
     }),
-    ...authConfig.providers.filter((p) => p.id !== "credentials"),
+    ...authConfig.providers.filter((p) => "id" in p && p.id !== "credentials"),
   ],
 });
